@@ -2,6 +2,37 @@
 #include <string>
 using namespace std;
 
+string substr(char *str, int beg, int num)
+{
+    if(beg<0)
+    {
+        beg = 0;
+    }
+    string temp = "";
+    for (int i = 0; i < num; i++)
+    {
+        if (*(str + beg + i)== '\0')
+        {
+            break;
+        }
+        temp += *(str+beg+i);
+    }
+    return temp;
+}
+string substr(string str, int beg, int num)
+{
+    if(beg<0)
+    {
+        beg = 0;
+    }
+    string temp = "";
+    for (int i = 0; i < num&&i<str.length();i++)
+    {
+        temp += str[i];
+    }
+    return temp;
+}
+
 struct BiNode
 {
     char data;
@@ -23,7 +54,7 @@ BiNode *buildTreeByPreAndIn(string pre, string in, BiNode *bt)
             if (in[i] == bt->data)
             {
                 beg++;
-                bt->lchild = buildTreeByPreAndIn(pre, in.substr(0, i), bt->lchild);
+                bt->lchild = buildTreeByPreAndIn(pre, substr(in,0, i), bt->lchild);
                 bt->rchild = buildTreeByPreAndIn(pre, in.substr(i + 1, in.length() - i - 1), bt->rchild);
                 break;
             }
