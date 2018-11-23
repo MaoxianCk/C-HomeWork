@@ -20,17 +20,33 @@ class BiTree
 	void PostOrder(BiNode<DataType> *bt); //后序遍历函数
 	void LeverOrder();					  //层序遍历函数
   private:
+	BiNode<DataType> *Creat(BiNode<DataType> *bt);
 	BiNode<DataType> *root; //指向根结点的头指针
 };
 
 template <class DataType>
 BiTree<DataType>::BiTree()
 {
-	//自己实现二叉树的构造
-	//...
-	
+	root = Creat(root);
 }
-
+template <class DataType>
+BiNode<DataType> *BiTree<DataType>::Creat(BiNode<DataType> *bt)
+{
+	char ch;
+	cin >> ch; //输入结点的数据信息，假设为字符
+	if (ch == '#')
+	{
+		bt = NULL; //建立一棵空树
+	}
+	else
+	{
+		bt = new BiNode<DataType>;
+		bt->data = ch;					//生成一个结点，数据域为ch
+		bt->lchild = Creat(bt->lchild); //递归建立左子树
+		bt->rchild = Creat(bt->rchild); //递归建立右子树
+	}
+	return bt;
+}
 template <class DataType>
 BiTree<DataType>::~BiTree()
 {
