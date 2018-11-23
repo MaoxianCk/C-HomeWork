@@ -119,5 +119,6 @@ int main()
     cout << "根据给定序列建历二叉树..." << endl;
     cout << "前序遍历以括号表示法打印二叉树：" << endl;
     printByPair(tree);
+
     return 0;
 }
