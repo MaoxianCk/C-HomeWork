@@ -45,7 +45,7 @@ BiNode *buildTreeByPreAndIn(string pre, string in, BiNode *bt)
 {
     static int beg = 0;
     bt = NULL;
-    if (pre != "" && in != "")
+    if (beg>=pre.length() && in != "")
     {
         bt = new BiNode();
         bt->data = pre[beg];
@@ -66,12 +66,12 @@ BiNode *buildTreeByPreAndIn(string pre, string in, BiNode *bt)
 void preOrder(BiNode *bt)
 {
     if (bt == NULL)
-        return; //µİ¹éµ÷ÓÃµÄ½áÊøÌõ¼ş
+        return; //é€’å½’è°ƒç”¨çš„ç»“æŸæ¡ä»¶
     else
     {
-        cout << bt->data << " "; //·ÃÎÊ¸ù½áµãbtµÄÊı¾İÓò
-        preOrder(bt->lchild);    //Ç°Ğòµİ¹é±éÀúbtµÄ×ó×ÓÊ÷
-        preOrder(bt->rchild);    //Ç°Ğòµİ¹é±éÀúbtµÄÓÒ×ÓÊ÷
+        cout << bt->data << " "; //è®¿é—®æ ¹ç»“ç‚¹btçš„æ•°æ®åŸŸ
+        preOrder(bt->lchild);    //å‰åºé€’å½’éå†btçš„å·¦å­æ ‘
+        preOrder(bt->rchild);    //å‰åºé€’å½’éå†btçš„å³å­æ ‘
     }
 }
 
@@ -100,16 +100,16 @@ int main()
 
     tree = buildTreeByPreAndIn(p, in, tree);
 
-    cout << "Ç°Ğò±éÀúĞòÁĞ£º";
+    cout << "å‰åºéå†åºåˆ—ï¼š";
     cout << p << endl;
 
-    cout << "ÖĞĞò±éÀúĞòÁĞ£º";
+    cout << "ä¸­åºéå†åºåˆ—ï¼š";
     cout << in << endl;
 
     cout << endl;
 
-    cout << "¸ù¾İ¸ø¶¨ĞòÁĞ½¨Àú¶ş²æÊ÷..." << endl;
-    cout << "Ç°Ğò±éÀúÒÔÀ¨ºÅ±íÊ¾·¨´òÓ¡¶ş²æÊ÷£º" << endl;
+    cout << "æ ¹æ®ç»™å®šåºåˆ—å»ºå†äºŒå‰æ ‘..." << endl;
+    cout << "å‰åºéå†ä»¥æ‹¬å·è¡¨ç¤ºæ³•æ‰“å°äºŒå‰æ ‘ï¼š" << endl;
     printByPair(tree);
 
     return 0;
