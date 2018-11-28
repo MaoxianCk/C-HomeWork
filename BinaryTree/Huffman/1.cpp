@@ -38,7 +38,7 @@ HuffmanTree *buildHuffman(int *weightArray, int n)
     }
     for (int i = n; i < size; i++)
     {
-        for (int j = 0; j < n; j++)
+        for (int j = 0; j < i; j++)
         {
             if (huffmanTree[j].parent != -1)
             {
@@ -62,6 +62,8 @@ HuffmanTree *buildHuffman(int *weightArray, int n)
         huffmanTree[i].rchild = indexMin2;
         huffmanTree[indexMin1].parent = i;
         huffmanTree[indexMin2].parent = i;
+        
+        //min值更新
     }
     HuffmanTree *temp = new HuffmanTree;
     temp->tree = huffmanTree;
@@ -71,7 +73,7 @@ HuffmanTree *buildHuffman(int *weightArray, int n)
 
 void print(HuffmanTree *h)
 {
-    cout << "�±�\tȨֵ\tparent\tlchild\trchild" << endl;
+    cout << "index\tweight\tparent\tlchild\trchild" << endl;
     for (int i = 0; i < h->size; i++)
     {
         cout << i << '\t' << h->tree[i].weight << '\t' << h->tree[i].parent << h->tree[i].lchild << h->tree[i].rchild << endl;
