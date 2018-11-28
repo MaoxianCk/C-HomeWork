@@ -1,45 +1,83 @@
-#include <cmath>
+#include <iomanip>
 #include <iostream>
+#include <math.h>
+#include <memory.h>
+#include <string>
+
 using namespace std;
 
-int Scan()
+double cal(double x, double y, int com)
 {
-	//  ÊäÈëÍâ¹Ò
-	int res = 0, flag = 0;
-	char ch;
-	if ((ch = getchar()) == '-')
+	switch (com)
 	{
-		flag = 1;
+	case 0:
+		return x + y;
+	case 1:
+		return x - y;
+	case 2:
+		return x * y;
+	case 3:
+		return x / y;
 	}
-	else if (ch >= '0' && ch <= '9')
-	{
-		res = ch - '0';
-	}
-	while ((ch = getchar()) >= '0' && ch <= '9')
-	{
-		res = res * 10 + (ch - '0');
-	}
-	return flag ? -res : res;
 }
-
+bool f(double a, double b, double c)
+{
+	bool t = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			int p = 0;
+			if (fabs(cal(cal(a, b, i), c, j) - 18) < 0.0001)
+			{
+				t=1; p++;
+				//cout << i << " " << j <<" "<<p<< endl;
+				break;
+			}
+			if (fabs(cal(cal(a, c, i), b, j) - 18) < 0.0001)
+			{
+				t = 1;
+				p++;
+				//cout << i << " " << j <<" "<<p<< endl;
+				break;
+			}
+			if (fabs(cal(cal(b, a, i), c, j) - 18) < 0.0001)
+			{
+				t=1; p++;
+				//cout << i << " " << j <<" "<<p<< endl;
+				break;
+			}
+			if (fabs(cal(cal(b, c, i), a, j) - 18) < 0.0001)
+			{
+				t=1; p++;
+				//cout << i << " " << j <<" "<<p<< endl;
+				break;
+			}
+			if (fabs(cal(cal(c, b, i), a, j) - 18) < 0.0001)
+			{
+				t=1; p++;
+				//cout << i << " " << j <<" "<<p<< endl;
+				break;
+			}
+			if (fabs(cal(cal(c, a, i), b, j) - 18) < 0.0001)
+			{
+				t=1; p++;
+				//cout << i << " " << j <<" "<<p<< endl;
+				break;
+			}
+		}
+	}
+	return t;
+}
 int main()
 {
-	int a,cnt=0;
-	cin >> a;
-	int b = 0;
-	while (a--)
+	int n;
+	cin >> n;
+	while (n--)
 	{
-		if(Scan()==1)
-		{
-			b++;
-		}
-		
-		else
-		{
-			cnt++;
-		}
-		
+		double a, b, c;
+		cin >> a >> b >> c;
+		cout << (f(a, b, c) ? "Yes" : "No") << endl;
 	}
-	cout << abs(cnt - b);
 	return 0;
 }

@@ -100,8 +100,15 @@ void printByPair(BiNode *bt)
     }
 }
 
+void f() { ; }
 int main()
 {
+    void (*a)()=f ;
+    cout << &a << endl;
+
+
+
+
     BiNode *tree = NULL;
     string in = "DBJHLKMNEAFCGI";
     string p = "DJLNMKHEBFIGCA";

@@ -29,6 +29,7 @@
         "iostream": "cpp",
         "sstream": "cpp",
         "*.tcc": "cpp",
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "iosfwd": "cpp"
     } // 效果效果比cpptools要好
 }
