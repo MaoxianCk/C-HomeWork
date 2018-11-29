@@ -105,7 +105,7 @@ HuffmanTree *buildHuffman(int *weightArray, int n)
 
 void print(HuffmanTree *h)
 {
-    cout << "index\tweight\tparent\tlchild\trchild\tcode" << endl;
+    cout << "index\tweight\tparent\tlchild\trchild" << endl;
     for (int i = 0; i < h->size; i++)
     {
         cout << i << '\t' << h->tree[i].weight << '\t' << h->tree[i].parent << '\t' << h->tree[i].lchild << '\t' << h->tree[i].rchild << endl;
