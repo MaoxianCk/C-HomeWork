@@ -24,7 +24,7 @@ HuffmanTree *buildHuffman(int *weightArray, int n)
     int min1 , min2 ;
     int indexMin1, indexMin2;
     int max=0;
-    //数据预处理
+
     for (int i = 0; i < size; i++)
     {
         if (i < n)
