@@ -12,6 +12,7 @@ class Graph
     bool visited[MAXSIZE];
 
     void DFSTraverse(int k);
+
   public:
     Graph();
     ~Graph();
@@ -68,19 +69,20 @@ template <class DataType>
 void Graph<DataType>::DFS(int k)
 {
     cleanVisited();
-
+    DFSTraverse(0);
+    cleanVisited();
 }
 template <class DataType>
 void Graph<DataType>::DFSTraverse(int k)
 {
     cout << vertex[k];
     visited[k] = 1;
-    for (int i = 0; i < vertexNum;i++)
+    for (int i = 0; i < vertexNum; i++)
     {
-        if(arc[k][i]==1 && visited[i]==0)
-            {
-                DFSTraverse(i);
-            }
+        if (arc[k][i] == 1 && visited[i] == 0)
+        {
+            DFSTraverse(i);
+        }
     }
 }
 
