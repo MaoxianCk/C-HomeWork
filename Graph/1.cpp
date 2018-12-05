@@ -1,43 +1,99 @@
 #include <iostream>
+#include <queue>
+#include<windows.h>
 using namespace std;
+
+int inputNumber(string info, string errorInfo, int range)
+{
+    string str;
+    while (true)
+    {
+        if (info != "")
+        {
+            cout << info;
+        }
+        bool flag = true; //标记是否纯数字
+        cin >> str;
+        for (unsigned int i = 0; i < str.length(); i++)
+        {
+            if (str[i] < '0' || str[i] > '9')
+            {
+                flag = false;
+                break;
+            }
+        }
+        if (flag == true)
+        {
+            int num = atoi(str.c_str());
+            if (num <= range)
+            {
+                return num;
+            }
+            else
+            {
+                cout << errorInfo << endl;
+                continue;
+            }
+        }
+        else
+        {
+            cout << errorInfo << endl;
+            continue;
+        }
+    }
+}
 
 template <class DataType>
 class Graph
 {
   private:
     static const int MAXSIZE = 20;
+    int vertexNum, arcNum;
+
     DataType vertex[MAXSIZE];
     bool arc[MAXSIZE][MAXSIZE];
-    int vertexNum, arcNum;
     bool visited[MAXSIZE];
 
+
     void DFSTraverse(int k);
+    void cleanVisited();
 
   public:
     Graph();
-    ~Graph();
     //k为遍历的起始顶点序号
     void DFS(int k);
     void BFS(int k);
-    void cleanVisited();
+    void displayArc();
 };
 template <class DataType>
 Graph<DataType>::Graph()
 {
     int n, e;
-    cout << "请输入图的顶点数：";
-    cin >> n;
-    //如果 > MAXSIZE 处理...
-    cout << "请输入图的边数：";
-    cin >> e; //如果 > MAXSIZE 处理...
+
+    n = inputNumber("请输入无向图中的顶点数(不大于20)：", "顶点数输入错误...", MAXSIZE);
+
+    int max_e = (n * (n - 1)) / 2;
+    e = inputNumber("请输入无向图中的边数(不大于" + to_string(max_e) + ")：", "边数输入错误...", max_e);
 
     this->vertexNum = n;
     this->arcNum = e;
+
+    //输入各顶点信息...(略)
+    //cout<<"输入顶点信息:"<<endl;
     for (int i = 0; i < vertexNum; i++)
     {
-        vertex[i] = i;
+        //cout << "v" << i << " :";
+        //cin >> vertex[i];
         visited[i] = 0;
     }
+
+    cout << "无向图中的顶点序号为：";
+    for (int i = 0; i < vertexNum; i++)
+    {
+        cout << "v" << i << " ";
+        //cout << vertex[i] << "  ";
+    }
+    cout << endl;
 
     for (int i = 0; i < vertexNum; i++)
     {
@@ -47,6 +103,7 @@ Graph<DataType>::Graph()
         }
     }
 
+    cout << "请输入无向图的边:" << endl;
     for (int i = 0; i < arcNum; i++)
     {
         int a, b;
@@ -55,6 +112,8 @@ Graph<DataType>::Graph()
         arc[a][b] = 1;
         arc[b][a] = 1;
     }
+
+    displayArc();
 }
 
 template <class DataType>
@@ -66,16 +125,32 @@ void Graph<DataType>::cleanVisited()
     }
 }
 template <class DataType>
+void Graph<DataType>::displayArc()
+{
+    cout << "无向图的邻接矩阵:" << endl;
+    for (int i = 0; i < vertexNum; i++)
+    {
+        for (int j = 0; j < vertexNum; j++)
+        {
+            cout << arc[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+template <class DataType>
 void Graph<DataType>::DFS(int k)
 {
     cleanVisited();
+    cout << "深度优先搜索：";
     DFSTraverse(0);
+    cout << endl;
     cleanVisited();
 }
 template <class DataType>
 void Graph<DataType>::DFSTraverse(int k)
 {
-    cout << vertex[k];
+    cout << "v" << k << " ";
+    //cout << vertex[k] << "  ";
     visited[k] = 1;
     for (int i = 0; i < vertexNum; i++)
     {
@@ -85,8 +160,39 @@ void Graph<DataType>::DFSTraverse(int k)
         }
     }
 }
+template <class DataType>
+void Graph<DataType>::BFS(int k)
+{
+    queue<int> q;
+    cleanVisited();
+    q.push(k);
+    visited[k] = 1;
+    cout << "广度优先搜索：";
 
+    cout << "v" << k << " ";
+    //cout << vertex[k] << "  ";
+    while (!q.empty())
+    {
+        k = q.front();
+        q.pop();
+        for (int i = 0; i < vertexNum; i++)
+        {
+            if (arc[k][i] == 1 && visited[i] == 0)
+            {
+                q.push(i);
+                visited[i] = 1;
+                cout << "v" << i << " ";
+                //cout << vertex[k] << "  ";
+            }
+        }
+    }
+    cout << endl;
+}
 int main()
 {
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_BLUE | FOREGROUND_GREEN);
+    Graph<int> g;
+    g.DFS(0);
+    g.BFS(0);
     return 0;
 }
