@@ -1,6 +1,6 @@
 #include <iostream>
 #include <queue>
-#include<windows.h>
+#include <windows.h>
 using namespace std;
 
 int inputNumber(string info, string errorInfo, int range)
@@ -54,7 +54,6 @@ class Graph
     bool arc[MAXSIZE][MAXSIZE];
     bool visited[MAXSIZE];
 
-
     void DFSTraverse(int k);
     void cleanVisited();
 
@@ -107,8 +106,20 @@ Graph<DataType>::Graph()
     for (int i = 0; i < arcNum; i++)
     {
         int a, b;
-        cout << "输入第" << i + 1 << "条边的两端顶点：";
-        cin >> a >> b;
+        cout << "输入第" << i + 1 << "条边的两端顶点：" << endl;
+        while (true)
+        {
+            a = inputNumber(("输入第" + to_string(i + 1) + "条边的第一个顶点："), "输入错误...", vertexNum - 1);
+            b = inputNumber(("输入第" + to_string(i + 1) + "条边的第二个顶点："), "输入错误...", vertexNum - 1);
+            if (arc[a][b] == 1 && arc[b][a] == 1)
+            {
+                cout << "该边(v" << a << ",v" << b << ")已存在,请重新输入..." << endl;
+            }
+            else
+            {
+                break;
+            }
+        }
         arc[a][b] = 1;
         arc[b][a] = 1;
     }
