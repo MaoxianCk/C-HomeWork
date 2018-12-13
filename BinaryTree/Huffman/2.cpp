@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <string>
 using namespace std;
@@ -15,7 +16,12 @@ struct HuffmanTree
     Node *tree;
     int size;
 };
-
+struct ch_value
+{
+    char ch;
+    int value;
+    string code;
+};
 
 Node *getHuffmanCode(Node *h, int index)
 {
@@ -59,7 +65,7 @@ void getMin2(HuffmanTree *tree, int *index1, int *index2)
         }
     }
 }
-HuffmanTree *buildHuffman(int *weightArray, int n)
+HuffmanTree *buildHuffman(ch_value *array, int n)
 {
     int size = 2 * n - 1;
     Node *huffmanTree = new Node[size];
@@ -72,7 +78,7 @@ HuffmanTree *buildHuffman(int *weightArray, int n)
     {
         if (i < n)
         {
-            huffmanTree[i].weight = weightArray[i];
+            huffmanTree[i].weight = array[i].value;
         }
         else
         {
@@ -99,11 +105,114 @@ HuffmanTree *buildHuffman(int *weightArray, int n)
 
     huffmanTree = getHuffmanCode(huffmanTree, size - 1);
 
+    for (int i = 0; i < n; i++)
+    {
+        array[i].code = huffmanTree[i].code;
+    }
+
     return temp;
 }
+int *getNext(string p)
+{
+    int *next = new int[p.length()];
+    next[0] = -1;
+    int i = 0;
+    int j = -1;
+    while (i < p.length())
+    {
+        if (j == -1 || p[j] == p[i])
+        {
+            i++;
+            j++;
+            next[i] = j;
+        }
+        else
+        {
+            j = next[j];
+        }
+    }
+    return next;
+}
+int kmp(string src, string p, int beg)
+{
 
+    int *next = getNext(p);
 
-void print(HuffmanTree *h)
+    int i = beg, j = 0;
+    while (i < src.length() && j < p.length())
+    {
+        if (j == -1 || src[i] == p[j])
+        {
+            i++;
+            j++;
+        }
+        else
+        {
+            j = next[j];
+        }
+    }
+    if (j == p.length())
+    {
+        return i - j;
+    }
+    return -1;
+}
+bool find(string src, string p, int beg) //O(n)
+{
+    int i = beg;
+    int j = 0;
+    int lenSrc = src.length();
+    int lenP = p.length();
+    while (i < lenSrc && j < lenP)
+    {
+        if (src[i] == p[j])
+        {
+            j++;
+        }
+        else
+        {
+            return false;
+        }
+        i++;
+    }
+    return true;
+}
+string returnByHuffman(ch_value *a, int n, string code)
+{
+    string ans = "";
+    int beg = 0;
+    while (beg < code.length())
+    {
+        for (int i = 0; i < n; i++)
+        {
+            if (find(code, a[i].code, beg))
+            {
+                beg += a[i].code.length();
+                ans += a[i].ch;
+                break;
+            }
+        }
+    }
+
+    return ans;
+}
+string toCodeByHuffman(ch_value *a, int m,string str){
+    string code = "";
+    for (int i = 0; i < str.length();i++)
+    {
+        for (int j = 0; j < m;j++)
+        {
+            if(str[i]==a[j].ch)
+            {
+                code += a[j].code;
+                break;
+            }
+        }
+    }
+    return code;
+}
+
+    void print(HuffmanTree *h)
 {
     cout << "index\tweight\tparent\tlchild\trchild" << endl;
     for (int i = 0; i < h->size; i++)
@@ -122,24 +231,83 @@ void printHuffmanCode(HuffmanTree *h)
     }
 }
 
-int main()
+void printChValue(ch_value *a, int n)
 {
-    int n;
-    cout << "Please input the number of HuffmanTree's leaf :";
-    cin >> n;
-    int *a = new int[n];
-    cout << "Please input the weight of leafs :" << endl;
+    cout << "char\tvalue\tcode\t" << endl;
     for (int i = 0; i < n; i++)
     {
-        cin >> a[i];
+        cout << a[i].ch << "\t" << a[i].value << "\t" << a[i].code << endl;
     }
+}
 
-    HuffmanTree *t = buildHuffman(a, n);
+bool isSmallWord(char ch)
+{
+    if (ch >= 'a' && ch <= 'z')
+    {
+        return true;
+    }
+    return false;
+}
+
+bool cmp(ch_value a, ch_value b)
+{
+    return a.ch < b.ch;
+}
+int main()
+{
+    cout << "Please input the string :" << endl;
+    string str;
+    cin >> str;
+
+    //pre deal
+    ch_value a[26];
+    int m = 0;
+    for (int i = 0; i < 26; i++)
+    {
+        a[i].value = 1;
+    }
+    for (int i = 0; i < str.length(); i++)
+    {
+        if (!isSmallWord(str[i]))
+        {
+            //if its illeagal , jump over it!
+            continue;
+        }
+        bool isfind = false;
+        for (int j = 0; j < m; j++)
+        {
+            if (str[i] == a[j].ch)
+            {
+                a[j].value++;
+                isfind = true;
+                break;
+            }
+        }
+        if (!isfind)
+        {
+            a[m++].ch = str[i];
+        }
+    }
+    //sort by char order
+    sort(a, a + m, cmp);
+
+    HuffmanTree *t = buildHuffman(a, m);
+
     print(t);
     cout << endl;
-    printHuffmanCode(t);
+    printChValue(a, m);
+    cout << endl;
+    //printHuffmanCode(t);
+    cout << "Please input str:" << endl;
+    string str1;
+    cin >> str1;
+    cout << toCodeByHuffman(a, m, str1) << endl;
+
+    cout << "Please input code" << endl;
+    string code;
+    cin >> code;
+    cout << returnByHuffman(a, m, code) << endl;
 
     delete t;
-    delete[] a;
     return 0;
 }
