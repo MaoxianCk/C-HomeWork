@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include<windows.h>
 using namespace std;
 
 struct Node
@@ -112,52 +113,7 @@ HuffmanTree *buildHuffman(ch_value *array, int n)
 
     return temp;
 }
-int *getNext(string p)
-{
-    int *next = new int[p.length()];
-    next[0] = -1;
-    int i = 0;
-    int j = -1;
-    while (i < p.length())
-    {
-        if (j == -1 || p[j] == p[i])
-        {
-            i++;
-            j++;
-            next[i] = j;
-        }
-        else
-        {
-            j = next[j];
-        }
-    }
-    return next;
-}
-int kmp(string src, string p, int beg)
-{
-
-    int *next = getNext(p);
-
-    int i = beg, j = 0;
-    while (i < src.length() && j < p.length())
-    {
-        if (j == -1 || src[i] == p[j])
-        {
-            i++;
-            j++;
-        }
-        else
-        {
-            j = next[j];
-        }
-    }
-    if (j == p.length())
-    {
-        return i - j;
-    }
-    return -1;
-}
-bool find(string src, string p, int beg) //O(n)
+bool find(string src, string p, int beg)
 {
     int i = beg;
     int j = 0;
@@ -175,7 +131,10 @@ bool find(string src, string p, int beg) //O(n)
         }
         i++;
     }
-    return true;
+    if(j==lenP){
+        return true;
+    }
+    return false;
 }
 string returnByHuffman(ch_value *a, int n, string code)
 {
@@ -183,14 +142,20 @@ string returnByHuffman(ch_value *a, int n, string code)
     int beg = 0;
     while (beg < code.length())
     {
+        bool isfind = false;
         for (int i = 0; i < n; i++)
         {
             if (find(code, a[i].code, beg))
             {
+                isfind = true;
                 beg += a[i].code.length();
                 ans += a[i].ch;
                 break;
             }
+        }
+        if (!isfind)
+        {
+            return "";
         }
     }
 
@@ -201,13 +166,19 @@ string toCodeByHuffman(ch_value *a, int m, string str)
     string code = "";
     for (int i = 0; i < str.length(); i++)
     {
+        bool isfind = false;
         for (int j = 0; j < m; j++)
         {
             if (str[i] == a[j].ch)
             {
                 code += a[j].code;
+                isfind = true;
                 break;
             }
+        }
+        if(!isfind)
+        {
+            return "";
         }
     }
     return code;
@@ -256,6 +227,7 @@ bool cmp(ch_value a, ch_value b)
 }
 int main()
 {
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_BLUE | FOREGROUND_GREEN);
     cout << "Please input the string :" << endl;
     string str;
     cin >> str;
@@ -272,7 +244,9 @@ int main()
         if (!isSmallWord(str[i]))
         {
             //if its illeagal , jump over it!
-            continue;
+            cout << "There are some error character!" << endl;
+            system("pause");
+            exit(0);
         }
         bool isfind = false;
         for (int j = 0; j < m; j++)
@@ -289,6 +263,12 @@ int main()
             a[m++].ch = str[i];
         }
     }
+    if(m==0)
+    {
+        cout << "There are no legal characters!" << endl;
+        system("pause");
+        exit(0);
+    }
     //sort by char order
     sort(a, a + m, cmp);
 
@@ -300,14 +280,16 @@ int main()
     cout << endl;
     //printHuffmanCode(t);
     cout << "Please input str:" << endl;
-    string str1;
+    string str1, ans;
     cin >> str1;
-    cout << toCodeByHuffman(a, m, str1) << endl;
+    ans = toCodeByHuffman(a, m, str1);
+    cout << (ans == "" ? "string error!" : ans) << endl;
 
     cout << "Please input code" << endl;
     string code;
     cin >> code;
-    cout << returnByHuffman(a, m, code) << endl;
+    ans = returnByHuffman(a, m, code);
+    cout << (ans == "" ? "string error!" : ans) << endl;
 
     delete t;
     return 0;
