@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
-#include<windows.h>
+#include <windows.h>
 using namespace std;
 
 struct Node
@@ -26,9 +26,10 @@ struct ch_value
 
 Node *getHuffmanCode(Node *h, int index)
 {
+    int lchild = h[index].lchild;
     if (h[index].lchild != -1)
     {
-        h[h[index].lchild].code = h[index].code + "0";
+        h[lchild].code = h[index].code + "0";
         h = getHuffmanCode(h, h[index].lchild);
     }
     if (h[index].rchild != -1)
@@ -124,14 +125,15 @@ bool find(string src, string p, int beg)
         if (src[i] == p[j])
         {
             j++;
+            i++;
         }
         else
         {
             return false;
         }
-        i++;
     }
-    if(j==lenP){
+    if (j == lenP)
+    {
         return true;
     }
     return false;
@@ -153,6 +155,7 @@ string returnByHuffman(ch_value *a, int n, string code)
                 break;
             }
         }
+
         if (!isfind)
         {
             return "";
@@ -176,7 +179,7 @@ string toCodeByHuffman(ch_value *a, int m, string str)
                 break;
             }
         }
-        if(!isfind)
+        if (!isfind)
         {
             return "";
         }
@@ -235,10 +238,6 @@ int main()
     //pre deal
     ch_value a[26];
     int m = 0;
-    for (int i = 0; i < 26; i++)
-    {
-        a[i].value = 1;
-    }
     for (int i = 0; i < str.length(); i++)
     {
         if (!isSmallWord(str[i]))
@@ -260,10 +259,11 @@ int main()
         }
         if (!isfind)
         {
+            a[m].value = 1;
             a[m++].ch = str[i];
         }
     }
-    if(m==0)
+    if (m == 0)
     {
         cout << "There are no legal characters!" << endl;
         system("pause");
