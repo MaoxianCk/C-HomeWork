@@ -255,43 +255,43 @@ void Graph::Prim(int k)
     cleanVisited();
     ArcVertexVal dist[MAXSIZE];
     ArcVertexVal shortEdge[MAXSIZE];
-    for (int i = 0; i < vertexNum; i++)
+    for (int i = 0; i < vertexNum;i++)
     {
         shortEdge[i].value = arc[k][i];
         shortEdge[i].vertex[0] = k;
     }
     shortEdge[k].value = 0;
-    int index = -1;
+    int index=-1;
     int m = 0;
-    for (int i = 0; i < vertexNum - 1; i++)
+    for (int i = 0; i < vertexNum-1;i++)
     {
         int temp = INT_MAX;
-        for (int j = 0; j < vertexNum; j++)
+        for (int j = 0; j < vertexNum;j++)
         {
-            if (temp > shortEdge[j].value && visited[j] == false)
+            if(temp>shortEdge[j].value && visited[j]==false)
             {
                 index = j;
                 temp = shortEdge[j].value;
             }
         }
         visited[index] = true;
-        cout << "(" << (char)('a' + dist[i].vertex[0]) << "," << (char)('a' + dist[i].vertex[1]) << ") value: " << dist[i].value << endl;
-        dist[m].vertex[0] = index;
-        dist[m].vertex[1] = shortEdge[index].vertex[0];
-        dist[m++].value = shortEdge[index].value;
+        cout << "(" << (char)('a'+dist[i].vertex[0]) << "," << (char)('a'+dist[i].vertex[1]) << ") value: " << dist[i].value << endl;
+    dist[m].vertex[0] = index;
+    dist[m].vertex[1] = shortEdge[index].vertex[0];
+    dist[m++].value = shortEdge[index].value;
 
-        shortEdge[index].value = 0;
-        for (int j = 0; j < vertexNum - 1; j++)
+    shortEdge[index].value = 0;
+    for (int j = 0; j < vertexNum-1; j++)
+    {
+        if (arc[index][j] < shortEdge[j].value)
         {
-            if (arc[index][j] < shortEdge[j].value)
-            {
-                shortEdge[j].value = arc[index][j];
-                shortEdge[j].vertex[0] = index;
-            }
+            shortEdge[j].value = arc[index][j];
+            shortEdge[j].vertex[0] = index;
+        }
         }
     }
     int sum = 0;
-    for (int i = 0; i < m; i++)
+    for (int i = 0; i < m;i++)
     {
         sum += dist[i].value;
         cout << "(" << vertex[dist[i].vertex[0]] << "," << vertex[dist[i].vertex[1]] << ") value: " << dist[i].value << endl;
