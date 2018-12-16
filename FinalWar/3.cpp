@@ -5,7 +5,7 @@ using namespace std;
 
 struct ArcVertexVal
 {
-    int vertex[2];
+    char vertex[2];
     int value;
 };
 int inputNumber(string info, string errorInfo, int range)
@@ -252,51 +252,48 @@ void Graph::BFS(int k)
 }
 void Graph::Prim(int k)
 {
-    cleanVisited();
-    ArcVertexVal dist[MAXSIZE];
-    ArcVertexVal shortEdge[MAXSIZE];
-    for (int i = 0; i < vertexNum;i++)
+    int lowcost[MAXSIZE];
+    int dist[MAXSIZE];
+    int min, minIndex, sum = 0;
+    ArcVertexVal ans[MAXSIZE];
+    for (int i = 1; i < vertexNum; i++)
     {
-        shortEdge[i].value = arc[k][i];
-        shortEdge[i].vertex[0] = k;
+        lowcost[i] = arc[k][i];
+        dist[i] = k;
     }
-    shortEdge[k].value = 0;
-    int index=-1;
-    int m = 0;
-    for (int i = 0; i < vertexNum-1;i++)
+    dist[0] = 0;
+    for (int i = 0; i < vertexNum - 1; i++)
     {
-        int temp = INT_MAX;
-        for (int j = 0; j < vertexNum;j++)
+        min = INT_MAX;
+        minIndex = 0;
+        for (int j = 1; j < vertexNum; j++)
         {
-            if(temp>shortEdge[j].value && visited[j]==false)
+            if (lowcost[j] < min && lowcost[j] != 0)
             {
-                index = j;
-                temp = shortEdge[j].value;
+                min = lowcost[j];
+                minIndex = j;
             }
         }
-        visited[index] = true;
-        cout << "(" << (char)('a'+dist[i].vertex[0]) << "," << (char)('a'+dist[i].vertex[1]) << ") value: " << dist[i].value << endl;
-    dist[m].vertex[0] = index;
-    dist[m].vertex[1] = shortEdge[index].vertex[0];
-    dist[m++].value = shortEdge[index].value;
-
-    shortEdge[index].value = 0;
-    for (int j = 0; j < vertexNum-1; j++)
-    {
-        if (arc[index][j] < shortEdge[j].value)
+        ans[i].vertex[0] = vertex[dist[minIndex]];
+        ans[i].vertex[1] = vertex[minIndex];
+        ans[i].value = min;
+        //cout << "( " << vertex[dist[minIndex]] << " , " << vertex[minIndex] << " ) = " << min << endl;
+        sum += min;
+        lowcost[minIndex] = 0;
+        for (int j = 1; j < vertexNum; j++)
         {
-            shortEdge[j].value = arc[index][j];
-            shortEdge[j].vertex[0] = index;
-        }
+            if (arc[minIndex][j] < lowcost[j])
+            {
+                lowcost[j] = arc[minIndex][j];
+                dist[j] = minIndex;
+            }
         }
     }
-    int sum = 0;
-    for (int i = 0; i < m;i++)
+    for (int i = 0; i < vertexNum-1;i++)
     {
-        sum += dist[i].value;
-        cout << "(" << vertex[dist[i].vertex[0]] << "," << vertex[dist[i].vertex[1]] << ") value: " << dist[i].value << endl;
+        cout << "( " << ans[i].vertex[0] << " , " << ans[i].vertex[1] << " ) = " << ans[i].value << endl;
     }
-    cout << sum << endl;
+        cout << "sum : " << sum << endl;
 }
 
 int main()
