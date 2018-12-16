@@ -261,11 +261,8 @@ int main()
 
     //pre deal
     ch_value a[26];
+
     int m = 0;
-    for (int i = 0; i < 26; i++)
-    {
-        a[i].value = 1;
-    }
     for (int i = 0; i < str.length(); i++)
     {
         if (!isSmallWord(str[i]))
@@ -282,11 +279,15 @@ int main()
                 isfind = true;
                 break;
             }
+
         }
         if (!isfind)
         {
+            a[m].value = 1;
             a[m++].ch = str[i];
         }
+
+
     }
     //sort by char order
     sort(a, a + m, cmp);
