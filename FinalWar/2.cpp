@@ -214,24 +214,25 @@ void Graph::BFS(int k)
 void Graph::Dijkstra(int k)
 {
     cleanVisited();
-    //shortest path from start(k) to per Point
-    int dist[MAXSIZE];
-    int path[MAXSIZE];
+    //从各个顶点到起点的开销
+    int cost[MAXSIZE];
+    //到起点的最短路径中，该点的上一点下标
+    int pathCost[MAXSIZE];
     for (int i = 0; i < MAXSIZE; i++)
     {
-        dist[i] = INT_MAX;
-        path[i] = -1;
+        cost[i] = INT_MAX;
+        pathCost[i] = -1;
     }
 
     visited[k] = true;
-    dist[k] = 0;
-    path[k] = k;
+    cost[k] = 0;
+    pathCost[k] = k;
     for (int i = 0; i < vertexNum; i++)
     {
         if (arc[k][i] != INT_MAX)
         {
-            dist[i] = arc[k][i];
-            path[i] = k;
+            cost[i] = arc[k][i];
+            pathCost[i] = k;
         }
     }
     while (true)
@@ -241,10 +242,10 @@ void Graph::Dijkstra(int k)
         int min = INT_MAX;
         for (int i = 0; i < vertexNum; i++)
         {
-            if (min > dist[i] && visited[i] == false)
+            if (min > cost[i] && visited[i] == false)
             {
                 minIndex = i;
-                min = dist[i];
+                min = cost[i];
             }
         }
         if (minIndex == -1)
@@ -258,26 +259,20 @@ void Graph::Dijkstra(int k)
             if (arc[minIndex][i] != INT_MAX && visited[i] == false)
             {
 
-                int minDist = dist[minIndex] + arc[minIndex][i];
-                if (minDist < dist[i])
+                int minDist = cost[minIndex] + arc[minIndex][i];
+                if (minDist < cost[i])
                 {
-                    dist[i] = minDist;
-                    path[i] = minIndex;
+                    cost[i] = minDist;
+                    pathCost[i] = minIndex;
                 }
             }
         }
     }
-    //cout << endl;
-    // cout << "index\tvertex\tnear\tdist" << endl;
-    // for (int i = 0; i < vertexNum; i++)
-    // {
-    //     cout << i << "\t" << vertex[i] << "\t" << path[i] << "\t" << dist[i] << endl;
-    // }
     cout << "以v" << vertex[k] << "为起点到各点的最短路径为:" << endl;
     for (int i = 0; i < vertexNum; i++)
     {
         string ans = "v" + to_string(vertex[i]);
-        int j = path[i];
+        int j = pathCost[i];
         while (true)
         {
             if (j == -1)
@@ -290,13 +285,13 @@ void Graph::Dijkstra(int k)
             {
                 break;
             }
-            j = path[j];
+            j = pathCost[j];
                 }
 
         cout << ans << " = ";
-        if (path[i] != -1)
+        if (pathCost[i] != -1)
         {
-            cout << dist[i];
+            cout << cost[i];
         }
 
         else
