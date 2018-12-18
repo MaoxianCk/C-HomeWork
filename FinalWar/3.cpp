@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <queue>
 #include <windows.h>
@@ -5,7 +6,7 @@ using namespace std;
 
 struct ArcVertexVal
 {
-    char vertex[2];
+    int vertex[2];
     int value;
 };
 int inputNumber(string info, string errorInfo, int range)
@@ -102,7 +103,8 @@ class Graph
     //k为遍历的起始顶点序号
     void DFS(int k);
     void BFS(int k);
-    void Prim(int k);
+    void Prim();
+    void Kruskal();
     void displayArc();
 };
 
@@ -250,16 +252,16 @@ void Graph::BFS(int k)
     }
     cout << endl;
 }
-void Graph::Prim(int k)
+void Graph::Prim()
 {
     int lowcost[MAXSIZE];
     int dist[MAXSIZE];
-    int min, minIndex, sum = 0;
+    int min, minIndex;
     ArcVertexVal ans[MAXSIZE];
     for (int i = 1; i < vertexNum; i++)
     {
-        lowcost[i] = arc[k][i];
-        dist[i] = k;
+        lowcost[i] = arc[0][i];
+        dist[i] = 0;
     }
     dist[0] = 0;
     for (int i = 0; i < vertexNum - 1; i++)
@@ -274,11 +276,10 @@ void Graph::Prim(int k)
                 minIndex = j;
             }
         }
-        ans[i].vertex[0] = vertex[dist[minIndex]];
-        ans[i].vertex[1] = vertex[minIndex];
+        ans[i].vertex[0] = dist[minIndex];
+        ans[i].vertex[1] = minIndex;
         ans[i].value = min;
         //cout << "( " << vertex[dist[minIndex]] << " , " << vertex[minIndex] << " ) = " << min << endl;
-        sum += min;
         lowcost[minIndex] = 0;
         for (int j = 1; j < vertexNum; j++)
         {
@@ -289,19 +290,81 @@ void Graph::Prim(int k)
             }
         }
     }
-    for (int i = 0; i < vertexNum-1;i++)
+    int sum = 0;
+    cout << "Prim:" << endl;
+    for (int i = 0; i < vertexNum - 1; i++)
     {
-        cout << "( " << ans[i].vertex[0] << " , " << ans[i].vertex[1] << " ) = " << ans[i].value << endl;
+        cout << "( " << (char)('a' + ans[i].vertex[0]) << " , " << (char)('a' + ans[i].vertex[1]) << " ) = " << ans[i].value << endl;
+        sum += ans[i].value;
     }
-        cout << "sum : " << sum << endl;
+    cout << "sum : " << sum << endl;
 }
 
+bool cmp(ArcVertexVal a, ArcVertexVal b)
+{
+    return a.value < b.value;
+}
+int getRoot(int v[], int x)
+{
+    while (v[x] != x)
+    {
+        x = v[x];
+    }
+    return x;
+}
+
+void Graph::Kruskal()
+{
+    int v[MAXSIZE];
+    ArcVertexVal KruskalArc[MAXSIZE];
+    ArcVertexVal ans[MAXSIZE];
+    int m = 0;
+    for (int i = 0; i < vertexNum; i++)
+    {
+        //初始化并查集
+        v[i] = i;
+        for (int j = i + 1; j < vertexNum; j++)
+        {
+            //将图转为边结构存入 KruskalArc
+            if (arc[i][j] != INT_MAX)
+            {
+                KruskalArc[m].vertex[0] = i;
+                KruskalArc[m].vertex[1] = j;
+                KruskalArc[m++].value = arc[i][j];
+            }
+        }
+    }
+    sort(KruskalArc, KruskalArc + m, cmp);
+    m = 0;
+    for (int i = 0; i < arcNum; i++)
+    {
+        int a, b;
+        a = getRoot(v, KruskalArc[i].vertex[0]);
+        b = getRoot(v, KruskalArc[i].vertex[1]);
+        if (a != b)
+        {
+            v[a] = b;
+            ans[m].vertex[0] = KruskalArc[i].vertex[0];
+            ans[m].vertex[1] = KruskalArc[i].vertex[1];
+            ans[m++].value = KruskalArc[i].value;
+        }
+    }
+    int sum = 0;
+    cout << "Kruskal:" << endl;
+    for (int i = 0; i < m; i++)
+    {
+        cout << "( " << (char)('a' + ans[i].vertex[0]) << " , " << (char)('a' + ans[i].vertex[1]) << " ) = " << ans[i].value << endl;
+        sum += ans[i].value;
+    }
+    cout << "sum : " << sum << endl;
+}
 int main()
 {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_BLUE | FOREGROUND_GREEN);
     Graph g;
     g.DFS(0);
     g.BFS(0);
-    g.Prim(0);
+    g.Prim();
+    g.Kruskal();
     return 0;
 }
