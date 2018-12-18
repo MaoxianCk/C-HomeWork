@@ -88,22 +88,19 @@ int inputVertex(string info, string errorInfo, int range)
 class Graph
 {
   private:
-    static const int MAXSIZE = 20;
+    static const int MAXSIZE = 100;
     int vertexNum, arcNum;
 
     char vertex[MAXSIZE];
     int arc[MAXSIZE][MAXSIZE];
     bool visited[MAXSIZE];
 
-    void DFSTraverse(int k);
     void cleanVisited();
 
   public:
     Graph();
     //k为遍历的起始顶点序号
-    void DFS(int k);
-    void BFS(int k);
-    void Prim();
+    void Prim(int k);
     void Kruskal();
     void displayArc();
 };
@@ -120,12 +117,8 @@ Graph::Graph()
     this->vertexNum = n;
     this->arcNum = e;
 
-    //输入各顶点信息...(略)
-    //cout<<"输入顶点信息:"<<endl;
     for (int i = 0; i < vertexNum; i++)
     {
-        //cout << "v" << i << " :";
-        //cin >> vertex[i];
         vertex[i] = (char)('a' + i);
     }
 
@@ -133,7 +126,6 @@ Graph::Graph()
     for (int i = 0; i < vertexNum; i++)
     {
         cout << vertex[i] << " ";
-        //cout << vertex[i] << "  ";
     }
     cout << endl;
 
@@ -158,7 +150,7 @@ Graph::Graph()
             value = inputNumber(("输入第" + to_string(i + 1) + "条边的权重："), "输入错误...", INT_MAX);
             if (arc[a][b] != INT_MAX && arc[b][a] != INT_MAX)
             {
-                cout << "该边(v" << a << ",v" << b << ")已存在,请重新输入..." << endl;
+                cout << "该边(i" << a << ",i" << b << ")已存在,请重新输入..." << endl;
             }
             else
             {
@@ -202,94 +194,55 @@ void Graph::displayArc()
     }
 }
 
-void Graph::DFS(int k)
+void Graph::Prim(int k)
 {
     cleanVisited();
-    cout << "深度优先搜索：";
-    DFSTraverse(0);
-    cout << endl;
-    cleanVisited();
-}
+    ArcVertexVal ans[MAXSIZE];
+    // 每个未加入树中的顶点到树的最小开销
+    int cost[MAXSIZE];
+    // 与最小开销对应的未加入树中的顶点编号
+    int pathCost[MAXSIZE];
 
-void Graph::DFSTraverse(int k)
-{
-    cout << vertex[k] << " ";
-    //cout << vertex[k] << "  ";
-    visited[k] = 1;
+    int min = INT_MAX;
+    int minIndex = k;
+
+    // 起点
+    visited[k] = true;
     for (int i = 0; i < vertexNum; i++)
     {
-        if (arc[k][i] != INT_MAX && visited[i] == 0)
-        {
-            DFSTraverse(i);
-        }
+        cost[i] = arc[k][i];
+        pathCost[i] = k;
     }
-}
 
-void Graph::BFS(int k)
-{
-    queue<int> q;
-    cleanVisited();
-    q.push(k);
-    visited[k] = 1;
-    cout << "广度优先搜索：";
-
-    cout << vertex[k] << " ";
-    //cout << vertex[k] << "  ";
-    while (!q.empty())
-    {
-        k = q.front();
-        q.pop();
-        for (int i = 0; i < vertexNum; i++)
-        {
-            if (arc[k][i] != INT_MAX && visited[i] == false)
-            {
-                q.push(i);
-                visited[i] = 1;
-                cout << vertex[i] << " ";
-                //cout << vertex[k] << "  ";
-            }
-        }
-    }
-    cout << endl;
-}
-void Graph::Prim()
-{
-    int lowcost[MAXSIZE];
-    int dist[MAXSIZE];
-    int min, minIndex;
-    ArcVertexVal ans[MAXSIZE];
-    for (int i = 1; i < vertexNum; i++)
-    {
-        lowcost[i] = arc[0][i];
-        dist[i] = 0;
-    }
-    dist[0] = 0;
     for (int i = 0; i < vertexNum - 1; i++)
     {
         min = INT_MAX;
-        minIndex = 0;
-        for (int j = 1; j < vertexNum; j++)
+        for (int j = 0; j < vertexNum; j++)
         {
-            if (lowcost[j] < min && lowcost[j] != 0)
+            if (!visited[j] && cost[j] < min)
             {
-                min = lowcost[j];
                 minIndex = j;
+                min = cost[j];
             }
         }
-        ans[i].vertex[0] = dist[minIndex];
+
+        ans[i].vertex[0] = pathCost[minIndex];
         ans[i].vertex[1] = minIndex;
         ans[i].value = min;
-        //cout << "( " << vertex[dist[minIndex]] << " , " << vertex[minIndex] << " ) = " << min << endl;
-        lowcost[minIndex] = 0;
-        for (int j = 1; j < vertexNum; j++)
+
+        visited[minIndex] = true;
+
+        //只需要更新与新加入的点相连的开销
+        for (int j = 0; j < vertexNum; j++)
         {
-            if (arc[minIndex][j] < lowcost[j])
+            if (!visited[j] && arc[minIndex][j] < cost[j])
             {
-                lowcost[j] = arc[minIndex][j];
-                dist[j] = minIndex;
+                cost[j] = arc[minIndex][j];
+                pathCost[j] = minIndex;
             }
         }
     }
+
     int sum = 0;
     cout << "Prim:" << endl;
     for (int i = 0; i < vertexNum - 1; i++)
@@ -304,25 +257,29 @@ bool cmp(ArcVertexVal a, ArcVertexVal b)
 {
     return a.value < b.value;
 }
-int getRoot(int v[], int x)
+//并查集求根
+int getRoot(int a[], int x)
 {
-    while (v[x] != x)
+    while (a[x] != x)
     {
-        x = v[x];
+        x = a[x];
     }
     return x;
 }
 
 void Graph::Kruskal()
 {
+    //并查集
     int v[MAXSIZE];
     ArcVertexVal KruskalArc[MAXSIZE];
     ArcVertexVal ans[MAXSIZE];
     int m = 0;
+
     for (int i = 0; i < vertexNum; i++)
     {
         //初始化并查集
         v[i] = i;
+        //遍历上三角
         for (int j = i + 1; j < vertexNum; j++)
         {
             //将图转为边结构存入 KruskalArc
@@ -336,11 +293,13 @@ void Graph::Kruskal()
     }
     sort(KruskalArc, KruskalArc + m, cmp);
     m = 0;
+    //将最小的非树点依次加入mst
     for (int i = 0; i < arcNum; i++)
     {
         int a, b;
         a = getRoot(v, KruskalArc[i].vertex[0]);
         b = getRoot(v, KruskalArc[i].vertex[1]);
+        //并查集判断集合情况
         if (a != b)
         {
             v[a] = b;
@@ -362,9 +321,9 @@ int main()
 {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_BLUE | FOREGROUND_GREEN);
     Graph g;
-    g.DFS(0);
-    g.BFS(0);
-    g.Prim();
+    cout << endl;
+    g.Prim(0);
+    cout << endl;
     g.Kruskal();
     return 0;
 }
