@@ -88,7 +88,7 @@ int inputVertex(string info, string errorInfo, int range)
 class Graph
 {
   private:
-    static const int MAXSIZE = 100;
+    static const int MAXSIZE = 26;
     int vertexNum, arcNum;
 
     char vertex[MAXSIZE];
