@@ -214,7 +214,7 @@ void Graph::BFS(int k)
 void Graph::criticalPath()
 {
     //最早发生时间
-    int ve[MAXSIZE]={0};
+    int ve[MAXSIZE] = {0};
     //最晚发生时间
     int vl[MAXSIZE];
     //最早开始时间
@@ -235,9 +235,28 @@ void Graph::criticalPath()
             }
         }
     }
+    vl[vertexNum - 1] = ve[vertexNum - 1];
+    for (int i = vertexNum - 1; i >= 0; i--)
+    {
+        int min=INT_MAX;
+        for (int j = vertexNum - 1; j >= 0; j--)
+        {
+
+            if (arc[i][j] !=INT_MAX &&  vl[j]-arc[i][j] < min)
+            {
+                min = vl[j] - arc[i][j];
+                vl[i] = min;
+            }
+        }
+    }
     for (int i = 0; i < vertexNum;i++)
     {
         cout << ve[i] << "  ";
+    }
+    cout << endl;
+    for (int i = 0; i < vertexNum; i++)
+    {
+        cout << vl[i] << "  ";
     }
 }
 int main()
