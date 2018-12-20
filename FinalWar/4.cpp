@@ -62,7 +62,6 @@ class Graph
     ArcVertexVal arcs[MAXSIZE * (MAXSIZE - 1) / 2];
 
     void DFSTraverse(int k);
-    void dfsprint(string ans,ArcVertexVal e[], int root);
     void cleanVisited();
 
   public:
@@ -242,7 +241,7 @@ bool Graph::topSort()
     {
         int v = s.top();
         s.pop();
-        cout << " v" << vertex[v];
+//        cout << " v" << vertex[v];
         cnt++;
         for (int i = vertexNum - 1; i >= 0; i--)
         {
@@ -351,12 +350,7 @@ void Graph::criticalPath()
     }
 
     cout << endl;
-    cout << "关键路径:";
-    string ans[MAXSIZE];
-    for (int i = 0; i < MAXSIZE; i++)
-    {
-        ans[i] = "";
-    }
+    cout << "关键路径:" << endl;
     ArcVertexVal e[MAXSIZE * (MAXSIZE - 1) / 2];
     int m = 0;
     for (int i = 0; i < arcNum; i++)
@@ -365,27 +359,10 @@ void Graph::criticalPath()
         {
             e[m].vertex[0] = arcs[i].vertex[0];
             e[m].vertex[1] = arcs[i].vertex[1];
-            e[m++].value = arcs[i].value;
-            cout << e[i].vertex[0] << "  " << e[i].vertex[1] << endl;
+            e[m].value = arcs[i].value;
+            cout << "a" << i + 1 << "   " << e[m].vertex[0] << "  " << e[m].vertex[1] << "  " << e[m].value << endl;
+            m++;
         }
-    }
-    //dfsprint(("v" + to_string(e[0].vertex[0])), e, e[0].vertex[0]);
-}
-void Graph::dfsprint(string ans, ArcVertexVal e[], int root)
-{
-    bool flag = false;
-    for (int i = 0; i < arcNum; i++)
-    {
-        if (e[i].vertex[0] == root)
-        {
-            flag = true;
-            ans = ans + " -> v" + to_string(root + 1);
-            dfsprint(ans, e, e[i].vertex[1]);
-        }
-    }
-    if(!flag)
-    {
-        cout << ans << endl;
     }
 }
 int main()
