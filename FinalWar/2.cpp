@@ -174,10 +174,10 @@ void Graph::DFSTraverse(int k)
 {
     cout << "v" << vertex[k] << " ";
     //cout << vertex[k] << "  ";
-    visited[k] = 1;
+    visited[k] = true;
     for (int i = 0; i < vertexNum; i++)
     {
-        if (arc[k][i] != INT_MAX && visited[i] == 0)
+        if (arc[k][i] != INT_MAX && visited[i] == false)
         {
             DFSTraverse(i);
         }
@@ -216,7 +216,7 @@ void Graph::Dijkstra(int k)
     cleanVisited();
     //从各个顶点到起点的开销
     int cost[MAXSIZE];
-    //到起点的最短路径中，该点的上一点下标
+    //到起点的最短路径中，该点的上一点的下标
     int pathCost[MAXSIZE];
     for (int i = 0; i < MAXSIZE; i++)
     {
@@ -268,6 +268,8 @@ void Graph::Dijkstra(int k)
             }
         }
     }
+
+
     cout << "以v" << vertex[k] << "为起点到各点的最短路径为:" << endl;
     for (int i = 0; i < vertexNum; i++)
     {
@@ -286,14 +288,13 @@ void Graph::Dijkstra(int k)
                 break;
             }
             j = pathCost[j];
-                }
+        }
 
         cout << ans << " = ";
         if (pathCost[i] != -1)
         {
             cout << cost[i];
         }
-
         else
         {
             cout << "is no way";

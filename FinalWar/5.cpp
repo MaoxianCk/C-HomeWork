@@ -129,6 +129,7 @@ Graph::Graph()
         }
         arc[a][b] = 1;
         vertex[b].in++;
+        cout << endl;
     }
 
     displayArc();
@@ -216,12 +217,12 @@ void Graph::topSort()
             s.push(i);
         }
     }
-
+    cout << "ÍØÆËÐòÁÐ:" << endl;
     while (!s.empty())
     {
         int v = s.top();
         s.pop();
-        cout << " v" << vertex[v].vertex;
+        cout << "v" << vertex[v].vertex<<" ";
         for (int i = vertexNum - 1; i >= 0; i--)
         {
             if (arc[v][i] == 1)

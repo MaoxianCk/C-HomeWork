@@ -219,7 +219,7 @@ void Graph::Prim(int k)
         min = INT_MAX;
         for (int j = 0; j < vertexNum; j++)
         {
-            if (!visited[j] && cost[j] < min)
+            if (visited[j]==false && cost[j] < min)
             {
                 minIndex = j;
                 min = cost[j];
@@ -235,7 +235,7 @@ void Graph::Prim(int k)
         //只需要更新与新加入的点相连的开销
         for (int j = 0; j < vertexNum; j++)
         {
-            if (!visited[j] && arc[minIndex][j] < cost[j])
+            if (visited[j]==false && arc[minIndex][j] < cost[j])
             {
                 cost[j] = arc[minIndex][j];
                 pathCost[j] = minIndex;
@@ -279,7 +279,6 @@ void Graph::Kruskal()
     {
         //初始化并查集
         v[i] = i;
-        //遍历上三角
         for (int j = i + 1; j < vertexNum; j++)
         {
             //将图转为边结构存入 KruskalArc
